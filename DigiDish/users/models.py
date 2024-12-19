@@ -11,13 +11,19 @@ ROLE_CHOICES = [
     ('verwaltung', 'Verwaltung'),
     ('standortleitung', 'Standortleitung'),
     ('gruppenleitung', 'Gruppenleitung'),
+    ('admin', 'Admin')
 ]
     
 class User(AbstractUser):
+
+    # Attribute
+
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     location = models.IntegerField(choices=LOCATION_CHOICES, null=True, blank=True)
     group_id = models.IntegerField(null=True, blank=True)
     is_kitchen = models.BooleanField(default=False)
+
+    # Allgemeine Methoden
 
     def __str__(self):
         return f"{self.username} - {self.role}"
@@ -27,7 +33,7 @@ class User(AbstractUser):
              raise PermissionError("This method is restricted.")
         return True
 
-     #Methoden für Gruppenleitung
+    # Methoden für Gruppenleitung
 
     def create_standortleitung(self, firstname, lastname, password, location=LOCATION_CHOICES):
         gruppenleitung = User.objects.create_user(
@@ -41,9 +47,8 @@ class User(AbstractUser):
         gruppenleitung.save()
         return gruppenleitung
 
-    #Methoden für Standortleitung
+    # Methoden für Standortleitung
 
-    @staticmethod
     def create_standortleitung(self, firstname, lastname, password, location=LOCATION_CHOICES):
         standortleitung = User.objects.create_user(
             first_name=firstname,
@@ -56,9 +61,8 @@ class User(AbstractUser):
         standortleitung.save()
         return standortleitung
 
-    #Methoden für Verwaltung
+    # Methoden für Verwaltung
 
-    @staticmethod
     def create_verwaltung(self, firstname, lastname, password):
         """
         Static method to create a Verwaltung user instance.
