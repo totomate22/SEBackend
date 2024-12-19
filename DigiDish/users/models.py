@@ -1,29 +1,78 @@
-from django.contrib.auth.models import AbstractUser, Group
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+LOCATION_CHOICES = [
+    (1, "Location 1"),
+    (2, "Location 2"),
+    (3, "Location 3")
+]
 
-class User(AbstractUser):
-    # Abstract User integriert id, username, first name, last name, email, passwords und haufen booleans
-    # Link each user to a role using Django's Group model
-    group = models.ForeignKey(
-        Group,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        help_text="Assign the user to a role (Django Group)."
-    )
-
-    def set_role(self, role_name):
-        """
-        Assign the user to a role (Django Group) based on the role name.
-        """
-        group, created = Group.objects.get_or_create(name=role_name)
-        self.group = group
-        self.groups.clear()  # Clear previous roles
-        self.groups.add(group)
-        self.save()
+ROLE_CHOICES = [
+    ('verwaltung', 'Verwaltung'),
+    ('standortleitung', 'Standortleitung'),
+    ('gruppenleitung', 'Gruppenleitung'),
+]
     
+class User(AbstractUser):
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+    location = models.IntegerField(choices=LOCATION_CHOICES, null=True, blank=True)
+    group_id = models.IntegerField(null=True, blank=True)
+    is_kitchen = models.BooleanField(default=False)
+
     def __str__(self):
-        return self.username
+        return f"{self.username} - {self.role}"
+    
+    def role_required(self, required_role): #überprüfung ob berechtigt
+        if (required_role != self.role):
+             raise PermissionError("This method is restricted.")
+        return True
+
+     #Methoden für Gruppenleitung
+
+    def create_standortleitung(self, firstname, lastname, password, location=LOCATION_CHOICES):
+        gruppenleitung = User.objects.create_user(
+            first_name=firstname,
+            last_name=lastname,
+            password=password,
+            role='gruppenleitung',
+            location=location,
+            username=f"{firstname.lower()}.{lastname.lower()}"  # username ist bsplw max.mustermann
+        )
+        gruppenleitung.save()
+        return gruppenleitung
+
+    #Methoden für Standortleitung
+
+    @staticmethod
+    def create_standortleitung(self, firstname, lastname, password, location=LOCATION_CHOICES):
+        standortleitung = User.objects.create_user(
+            first_name=firstname,
+            last_name=lastname,
+            password=password,
+            role='standortleitung',
+            location=location,
+            username=f"{firstname.lower()}.{lastname.lower()}"  # username ist bsplw max.mustermann
+        )
+        standortleitung.save()
+        return standortleitung
+
+    #Methoden für Verwaltung
+
+    @staticmethod
+    def create_verwaltung(self, firstname, lastname, password):
+        """
+        Static method to create a Verwaltung user instance.
+        """
+        self.role_required('verwaltung') 
+        verwaltung = User.objects.create_user( #verwendung von create_user weil passwort dann automatisch gehasht
+            first_name=firstname,
+            last_name=lastname,
+            password=password,
+            role='verwaltung',
+            username=f"{firstname.lower()}.{lastname.lower()}"  # username ist bsplw max.mustermann
+        )
+        verwaltung.save()
+        return verwaltung
+
 
     
