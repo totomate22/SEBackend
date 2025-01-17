@@ -9,8 +9,8 @@ class OrderAdmin(admin.ModelAdmin):
 admin.site.register(Order, OrderAdmin)
 
 class MemberAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name','id')  # Example fields
-    search_fields = ('first_name', 'last_name','id')
+    list_display = ('last_name', 'first_name', 'id')  # Example fields
+    search_fields = ('last_name', 'first_name', 'id')
 
 admin.site.register(Member, MemberAdmin)
 
