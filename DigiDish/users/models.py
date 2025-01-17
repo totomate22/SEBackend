@@ -22,7 +22,7 @@ class User(AbstractUser):
 
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='gruppenleitung')
     location = models.IntegerField(choices=LOCATION_CHOICES, null=True, blank=True)
-    incharge_group_id = models.IntegerField(null=True, blank=True, default=0)
+    group_id = models.IntegerField(null=True, blank=True, default=0)
     is_kitchen = models.BooleanField(default=False)
     
 

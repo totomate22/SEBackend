@@ -2,9 +2,18 @@ from django.db import models
 from django.conf import settings
 
 class Member (models.Model):
+
+    LOCATION_CHOICES = [
+    (1, "Location 1"),
+    (2, "Location 2"),
+    (3, "Location 3")
+    ] 
+
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     group_id = models.IntegerField(default=0)
+    location = models.IntegerField(choices=LOCATION_CHOICES, null=True, blank=True)
+
     #id is automatically created by django, so no need for extra 
 
     def __str__(self):

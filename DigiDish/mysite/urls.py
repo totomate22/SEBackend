@@ -22,4 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.homepage, name='homepage'), #homepage
     path('login/',views.login_view, name='login'),  # Global loginpage
+    path('logout/', views.logout_view, name='logout'),
+    path('home/', views.home_view, name='home'),    #home after login
+    path('group_dashboard/', views.group_dashboard, name='group_dashboard'),    #gruppenansicht
+    path('add_order/', views.add_order, name='add_order'),      #order hinzufügen
 ]
