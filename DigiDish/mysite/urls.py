@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +28,4 @@ urlpatterns = [
     path('home/', views.home_view, name='home'),    #home after login
     path('group_dashboard/', views.group_dashboard, name='group_dashboard'),    #gruppenansicht
     path('add_order/', views.add_order, name='add_order'),      #order hinzufügen
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
