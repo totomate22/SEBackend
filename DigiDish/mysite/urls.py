@@ -28,4 +28,6 @@ urlpatterns = [
     path('home/', views.home_view, name='home'),    #home after login
     path('group_dashboard/', views.group_dashboard, name='group_dashboard'),    #gruppenansicht
     path('add_order/', views.add_order, name='add_order'),      #order hinzufügen
+    path('delete-orders/', views.delete_orders, name='delete_orders'),  #order löschen
+    path('standortleitung_dashboard/', views.standortleitung_dashboard, name='standortleitung_dashboard'),  #standortleitungansicht
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

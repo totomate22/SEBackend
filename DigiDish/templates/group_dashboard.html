@@ -1,10 +1,14 @@
 <!-- group_dashboard.html -->
 <!DOCTYPE html>
-<h1>Group Dashboard</h1>
+<h2>Group Dashboard</h2>
 
 {% if user.is_authenticated %}
-    <h2>Welcome, {{ user.username }}</h2>
+    <h3>Welcome, {{ user.username }}</h3>
     <p>Your Group ID: {{ user.group_id }}</p>
+    <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
     
     <!-- Display Members -->
     <h3>Members in Your Group</h3>
@@ -51,16 +55,21 @@
     <!-- Display Orders -->
     <h3>Orders in Your Group</h3>
     {% if orders %}
-        <ul>
-            {% for order in orders %}
-                <li>
-                    Order ID: {{ order.id }} | Member: {{ order.member.first_name }} {{ order.member.last_name }} | 
-                    Date: {{ order.date }} | Choice: {{ order.choice }} | 
-                    Salat: {{ order.salat|yesno:"Yes,No" }} | 
-                    Status: {{ order.get_status_display }}
-                </li>
-            {% endfor %}
-        </ul>
+        <form method="POST" action="{% url 'delete_orders' %}">
+            {% csrf_token %}
+            <ul>
+                {% for order in orders %}
+                    <li>
+                        <input type="checkbox" name="orders_to_delete" value="{{ order.id }}">
+                        Order ID: {{ order.id }} | Member: {{ order.member.first_name }} {{ order.member.last_name }} | 
+                        Date: {{ order.date }} | Choice: {{ order.choice }} | 
+                        Salat: {{ order.salat|yesno:"Yes,No" }} | 
+                        Status: {{ order.get_status_display }}
+                    </li>
+                {% endfor %}
+            </ul>
+            <button type="submit">Delete Selected Orders</button>
+        </form>
     {% else %}
         <p>No orders found for your group.</p>
     {% endif %}

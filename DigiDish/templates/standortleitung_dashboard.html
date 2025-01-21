@@ -1,0 +1,41 @@
+<!-- group_dashboard.html -->
+<!DOCTYPE html>
+<h2>Standortleitung Dashboard</h2>
+
+{% if user.is_authenticated %}
+    <h3>Welcome, {{ user.username }}</h3>
+    <p>Your Location: {{ user.location }}</p>
+    <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+    
+    <!-- Display Staff -->
+    <h3>Staff at your Location</h3>
+    {% if users %}
+        <ul>
+            {% for staff in users %}
+                <li>{{ staff.first_name }} {{ staff.last_name }} (Role: {{ staff.role }} - Staff-ID: {{ staff.id }})</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Currently no Staff at your Location.</p>
+    {% endif %}
+
+
+    <!-- Display Members -->
+    <h3>Members at your Location</h3>
+    {% if members %}
+        <ul>
+            {% for member in members %}
+                <li>{{ member.first_name }} {{ member.last_name }} (ID: {{ member.id }})</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No members found at your Location.</p>
+    {% endif %}
+
+
+{% else %}
+    <p>You need to <a href="{% url 'login' %}">log in</a> to view this page.</p>
+{% endif %}

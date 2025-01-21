@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from order.models import Member, Order
+from users.models import User
 
 from datetime import datetime
 
@@ -19,7 +20,9 @@ def login_view(request):
         if user is not None:
             login(request, user)
             if user.role == 'gruppenleitung':
-                return redirect('group_dashboard')  
+                return redirect('group_dashboard') 
+            if user.role == 'standortleitung':
+                return redirect('standortleitung_dashboard') 
             return redirect('home')  # Redirect to home page or dashboard
         else:
             messages.error(request, 'Invalid username or password')
@@ -62,5 +65,37 @@ def add_order(request):
         messages.success(request, "Order added successfully.")
         return redirect('group_dashboard')
     return render(request, 'group_dashboard.html')
+
+@login_required
+def delete_orders(request):
+    if request.method == 'POST':
+        # Get the list of order IDs to delete from the form
+        orders_to_delete = request.POST.getlist('orders_to_delete')
+
+        # Filter and delete the orders
+        Order.objects.filter(id__in=orders_to_delete).delete()
+
+        # Redirect back to the dashboard
+        return redirect('group_dashboard')  # Replace 'group_dashboard' with the name of your dashboard URL
+    else:
+        # Redirect to dashboard if accessed via GET
+        return redirect('group_dashboard')
+    
+@login_required
+def standortleitung_dashboard(request):
+    user = request.user
+    user_location = user.location
+
+    members =  Member.objects.filter(location=user_location)
+    orders = Order.objects.filter(member__location=user_location)
+    users = User.objects.filter(location=user_location,role='gruppenleitung')       #nochmal nachfragen, ob auch sl mit reins soll
+
+
+    return render(request, 'standortleitung_dashboard.html', {
+        'user': user,
+        'members': members,
+        'orders': orders,
+        'users': users,
+    })
 
 # Create your views here.
