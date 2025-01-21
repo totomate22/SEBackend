@@ -32,4 +32,5 @@ urlpatterns = [
     path('standortleitung_dashboard/', views.standortleitung_dashboard, name='standortleitung_dashboard'),  #standortleitungansicht
     path('add_member/', views.add_member, name='add_member'), #member hinzufügen
     path('delete-members/', views.delete_members, name='delete_members'),   #members löschen
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('verwaltung_dashboard/', views.verwaltung_dashboard, name='verwaltung_dashboard'), #verwaltungsdashboard
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)   #verweist auf settings für qr-code

@@ -4,11 +4,16 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from order.models import Member, Order
 from users.models import User
-
+from django.utils.text import slugify
 from datetime import datetime
 
 
+# General Methods
 
+def delete_items(model, ids):
+    model.objects.filter(id__in=ids).delete()
+
+#
 def homepage(request):
     return render(request, 'homepage.html', {})
 
@@ -23,6 +28,8 @@ def login_view(request):
                 return redirect('group_dashboard') 
             if user.role == 'standortleitung':
                 return redirect('standortleitung_dashboard') 
+            if user.role == 'verwaltung':
+                return redirect('verwaltung_dashboard')
             return redirect('home')  # Redirect to home page or dashboard
         else:
             messages.error(request, 'Invalid username or password')
@@ -30,6 +37,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
+    messages.success(request, "You have been logged out.")
     return redirect('login')  # Redirect to login page after logout
 
 @login_required
@@ -73,12 +81,9 @@ def delete_orders(request):
     if request.method == 'POST':
         # Get the list of order IDs to delete from the form
         orders_to_delete = request.POST.getlist('orders_to_delete')
-
-        # Filter and delete the orders
-        Order.objects.filter(id__in=orders_to_delete).delete()
-
+        delete_items(Order, orders_to_delete)
         # Redirect back to the dashboard
-        return redirect('group_dashboard')  # Replace 'group_dashboard' with the name of your dashboard URL
+        return redirect('group_dashboard') 
     else:
         # Redirect to dashboard if accessed via GET
         return redirect('group_dashboard')
@@ -112,7 +117,7 @@ def add_member(request):
         
         member = Member(first_name=first_name, last_name=last_name, group_id=group_id,location=location)
         member.save()
-        messages.success(request, "Order added successfully.")
+        messages.success(request, "Member added successfully.")
         return redirect('standortleitung_dashboard')
     return render(request, 'standortleitung_dashboard.html')
 
@@ -121,14 +126,82 @@ def delete_members(request):
     if request.method == 'POST':
         # Get the list of order IDs to delete from the form
         members_to_delete = request.POST.getlist('members_to_delete')
-
-        # Filter and delete the orders
-        Order.objects.filter(id__in=members_to_delete).delete()
+        delete_items(Order, members_to_delete)
 
         # Redirect back to the dashboard
-        return redirect('standortleitung_dashboard')  # Replace 'group_dashboard' with the name of your dashboard URL
+        return redirect('standortleitung_dashboard')  
     else:
         # Redirect to dashboard if accessed via GET
         return redirect('standortleitung_dashboard')
+    
+#Verwaltung-Dashboard und Funktionen
+
+@login_required
+def verwaltung_dashboard(request):
+    if request.user.role != 'verwaltung':  # Ensure only 'verwaltung' users can access this
+        messages.error(request, "You are not authorized to access this page.")
+        return redirect('home')  # Redirect unauthorized users
+
+    if request.method == 'POST':
+        # Handle user creation
+        if 'create_user' in request.POST:
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            password = request.POST.get('password')
+            role = request.POST.get('role')
+            location = request.POST.get('location')  # Optional for standortleitung users
+
+            if not (first_name and last_name and password and role):
+                messages.error(request, "All fields are required to create a user.")
+                return redirect('verwaltung_dashboard')
+
+            if role not in ['gruppenleitung', 'standortleitung']:
+                messages.error(request, "Invalid role selected.")
+                return redirect('verwaltung_dashboard')
+
+            # Generate the username based on first_name and last_name
+            base_username = slugify(f"{first_name}{last_name}")  # Combine names, slugify for safety
+            username = base_username
+            counter = 1
+
+            # Ensure the username is unique
+            while User.objects.filter(username=username).exists():
+                username = f"{base_username}{counter}"
+                counter += 1
+
+            # Create the user
+            try:
+                user = User.objects.create_user(
+                    username=username,
+                    password=password,
+                    first_name=first_name,
+                    last_name=last_name,
+                )
+                user.role = role
+                if role == 'standortleitung':
+                    user.location = location
+                user.save()
+                messages.success(request, f"{role.capitalize()} user '{username}' created successfully.")
+            except Exception as e:
+                messages.error(request, f"Error creating user: {str(e)}")
+                return redirect('verwaltung_dashboard')
+
+        # Handle user deletion
+        elif 'delete_users' in request.POST:
+            users_to_delete = request.POST.getlist('users_to_delete')
+            if users_to_delete:
+                User.objects.filter(id__in=users_to_delete).delete()
+                messages.success(request, "Selected users deleted successfully.")
+            else:
+                messages.error(request, "No users selected for deletion.")
+    
+    # Fetch all gruppenleitung and standortleitung users for display
+    gruppenleitung_users = User.objects.filter(role='gruppenleitung')
+    standortleitung_users = User.objects.filter(role='standortleitung')
+
+    return render(request, 'verwaltung_dashboard.html', {
+        'gruppenleitung_users': gruppenleitung_users,
+        'standortleitung_users': standortleitung_users,
+    })
 
 # Create your views here.
