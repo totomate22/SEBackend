@@ -30,4 +30,6 @@ urlpatterns = [
     path('add_order/', views.add_order, name='add_order'),      #order hinzufügen
     path('delete-orders/', views.delete_orders, name='delete_orders'),  #order löschen
     path('standortleitung_dashboard/', views.standortleitung_dashboard, name='standortleitung_dashboard'),  #standortleitungansicht
+    path('add_member/', views.add_member, name='add_member'), #member hinzufügen
+    path('delete-members/', views.delete_members, name='delete_members'),   #members löschen
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

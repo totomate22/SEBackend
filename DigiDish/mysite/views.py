@@ -36,6 +36,8 @@ def logout_view(request):
 def home_view(request):
     return render(request, 'home.html')
 
+# Group-Dashboard and Functions
+
 @login_required
 def group_dashboard(request):
     user = request.user
@@ -81,6 +83,8 @@ def delete_orders(request):
         # Redirect to dashboard if accessed via GET
         return redirect('group_dashboard')
     
+# Standortleitung-Dashboard and Function
+
 @login_required
 def standortleitung_dashboard(request):
     user = request.user
@@ -97,5 +101,34 @@ def standortleitung_dashboard(request):
         'orders': orders,
         'users': users,
     })
+
+@login_required
+def add_member(request):
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        group_id =request.POST.get('group_id')
+        location=request.POST.get('location')
+        
+        member = Member(first_name=first_name, last_name=last_name, group_id=group_id,location=location)
+        member.save()
+        messages.success(request, "Order added successfully.")
+        return redirect('standortleitung_dashboard')
+    return render(request, 'standortleitung_dashboard.html')
+
+@login_required
+def delete_members(request):
+    if request.method == 'POST':
+        # Get the list of order IDs to delete from the form
+        members_to_delete = request.POST.getlist('members_to_delete')
+
+        # Filter and delete the orders
+        Order.objects.filter(id__in=members_to_delete).delete()
+
+        # Redirect back to the dashboard
+        return redirect('standortleitung_dashboard')  # Replace 'group_dashboard' with the name of your dashboard URL
+    else:
+        # Redirect to dashboard if accessed via GET
+        return redirect('standortleitung_dashboard')
 
 # Create your views here.

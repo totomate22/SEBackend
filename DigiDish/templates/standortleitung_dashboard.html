@@ -22,15 +22,50 @@
         <p>Currently no Staff at your Location.</p>
     {% endif %}
 
+    <!-- Form to Add a New Order -->
+    <h3>Add a Member</h3>
+    <form method="POST" action="{% url 'add_member' %}">
+        {% csrf_token %}
+
+        <label for="first_name">First Name:</label>
+        <input type="text" name="first_name" id="first_name" required>
+        <br>
+
+        <label for="last_name">Last Name:</label>
+        <input type="text" name="last_name" id="last_name" required>
+        <br>     
+
+        <label for="group_id">Group-ID:</label>
+        <input type="number" name="group_id" id="group_id" min="0" required>
+        <br>  
+
+        <label for="location">Location:</label>
+        <select name="location" id="location" required>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+        <br>
+           
+        
+        <button type="submit">Add Member</button>
+    </form>
 
     <!-- Display Members -->
     <h3>Members at your Location</h3>
     {% if members %}
+    <form method="POST" action="{% url 'delete_members' %}">
+        {% csrf_token %}
         <ul>
             {% for member in members %}
-                <li>{{ member.first_name }} {{ member.last_name }} (ID: {{ member.id }})</li>
+                <li>
+                    <input type="checkbox" name="members_to_delete" value="{{ member.id }}">
+                    {{ member.first_name }} {{ member.last_name }} (ID: {{ member.id }})
+                </li>
             {% endfor %}
         </ul>
+        <button type="submit">Delete Selected Orders</button>
+    </form>
     {% else %}
         <p>No members found at your Location.</p>
     {% endif %}
