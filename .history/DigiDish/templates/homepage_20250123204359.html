@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+</head>
+<body>
+    <header>
+        <h1>Willkommen bei DigiDish</h1>
+        <p> >> Ihre Lösung für digitales Mahlzeiten-Management</p>
+    </header>
+    <main>
+        <a href="{% url 'login' %}" class="button">Go to Login Page</a>  
+    </main>
+    <footer>
+        <p>&copy; 2025 DigiDish</p>
+    </footer>
+</body>
+</html>
