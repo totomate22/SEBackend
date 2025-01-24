@@ -112,26 +112,8 @@ footer {
 }
 
 .Container_Order_Summary {
-    width: 45%;
     position: absolute;
     right: 0;
-    padding: 1.5rem;
-    padding: 1.5rem;
-    margin: 0.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-    gap: 0.5rem;
-    border: none;
-    border-radius: 12px;
-    background-color: #CFE2FF;
-}
-
-.Container_Member_Overview {
-    max-width: 50%;
-    position: absolute;
-    left: 0;
-    bottom: 0;
     padding: 1.5rem;
     padding: 1.5rem;
     margin: 0.5rem;

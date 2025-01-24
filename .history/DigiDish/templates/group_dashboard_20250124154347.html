@@ -12,31 +12,29 @@
         <!-- Header -->
         <header>
             {% if user.is_authenticated %}
-            <h1>Hallo, {{ user.username }}</h1>
-            <!-- Suche und Logout -->
-            <div class="Container_Header">
+            <h2>Hallo, {{ user.username }}</h2>
+            <p>Gruppen-ID: {{ user.group_id }}</p>
+
+            <input class="Suche" type="text" id="search" name="search" placeholder="Suche">
             <form method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="Ausloggen">Logout</button>
             </form>
-            </div>
         </header>
         <!-- Main Content Area -->
         <main>
-            <div class="Container_Member_Overview">
-            <input class="Eingabefeld" type="text" id="search" name="search" placeholder="Suche">
-            <!-- Display Members -->
-            <h3>Mitglieder Gruppe {{ user.group_id }}</h3>
-            {% if members %}
-                <ul>
-                    {% for member in members %}
-                    <li>{{ member.first_name }} {{ member.last_name }} (ID: {{ member.id }})</li>
-                    {% endfor %}
-                </ul>
+                <!-- Display Members -->
+                <h3>Members in Your Group</h3>
+                {% if members %}
+                    <ul>
+                        {% for member in members %}
+                            <li>{{ member.first_name }} {{ member.last_name }} (ID: {{ member.id }})</li>
+                        {% endfor %}
+                    </ul>
                 {% else %}
                     <p>No members found for your group.</p>
                 {% endif %}
-            </div>
+
                 <!-- Form to Add a New Order -->
                 <h3>Add a New Order</h3>
                 <form method="POST" action="{% url 'add_order' %}">
@@ -64,32 +62,31 @@
                     <input type="date" name="date" id="date" required>
                     <br>
 
-                    <button type="submit" class="Bestaetigung">Add Order</button>
+                    <button type="submit">Add Order</button>
                 </form>
 
                 <!-- Display Orders -->
-                <div class="Container_Order_Summary">
-                    <h3>Bestellungen für Gruppe {{ user.group_id }}</h3>
-                    {% if orders %}
-                        <form method="POST" action="{% url 'delete_orders' %}">
-                            {% csrf_token %}
-                            <ul>
-                                {% for order in orders %}
-                                    <li>
-                                        <input type="checkbox" name="orders_to_delete" value="{{ order.id }}">
-                                        Order ID: {{ order.id }} | Member: {{ order.member.first_name }} {{ order.member.last_name }} | 
-                                        Date: {{ order.date }} | Choice: {{ order.choice }} | 
-                                        Salat: {{ order.salat|yesno:"Yes,No" }} | 
-                                        Status: {{ order.get_status_display }}
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                            <button type="submit">Delete Selected Orders</button>
-                        </form>
-                    {% else %}
-                        <p>No orders found for your group.</p>
-                    {% endif %}
-                </div>
+                <h3>Orders in Your Group</h3>
+                {% if orders %}
+                    <form method="POST" action="{% url 'delete_orders' %}">
+                        {% csrf_token %}
+                        <ul>
+                            {% for order in orders %}
+                                <li>
+                                    <input type="checkbox" name="orders_to_delete" value="{{ order.id }}">
+                                    Order ID: {{ order.id }} | Member: {{ order.member.first_name }} {{ order.member.last_name }} | 
+                                    Date: {{ order.date }} | Choice: {{ order.choice }} | 
+                                    Salat: {{ order.salat|yesno:"Yes,No" }} | 
+                                    Status: {{ order.get_status_display }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <button type="submit">Delete Selected Orders</button>
+                    </form>
+                {% else %}
+                    <p>No orders found for your group.</p>
+                {% endif %}
+
             {% else %}
                 <p>You need to <a href="{% url 'login' %}">log in</a> to view this page.</p>
             {% endif %}

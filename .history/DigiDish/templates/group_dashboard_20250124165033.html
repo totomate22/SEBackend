@@ -23,10 +23,9 @@
         </header>
         <!-- Main Content Area -->
         <main>
-            <div class="Container_Member_Overview">
             <input class="Eingabefeld" type="text" id="search" name="search" placeholder="Suche">
             <!-- Display Members -->
-            <h3>Mitglieder Gruppe {{ user.group_id }}</h3>
+            <h3>Members in Your Group</h3>
             {% if members %}
                 <ul>
                     {% for member in members %}
@@ -36,7 +35,6 @@
                 {% else %}
                     <p>No members found for your group.</p>
                 {% endif %}
-            </div>
                 <!-- Form to Add a New Order -->
                 <h3>Add a New Order</h3>
                 <form method="POST" action="{% url 'add_order' %}">
@@ -70,6 +68,7 @@
                 <!-- Display Orders -->
                 <div class="Container_Order_Summary">
                     <h3>Bestellungen für Gruppe {{ user.group_id }}</h3>
+                    <br>
                     {% if orders %}
                         <form method="POST" action="{% url 'delete_orders' %}">
                             {% csrf_token %}
