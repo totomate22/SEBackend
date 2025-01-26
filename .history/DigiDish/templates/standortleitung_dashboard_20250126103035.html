@@ -1,4 +1,4 @@
-<!-- Standortleitung_dashboard.html -->
+<!-- group_dashboard.html -->
 <!DOCTYPE html>
 <html>
     <head>
@@ -24,42 +24,19 @@
         </header>
         <!-- Main Content Area -->
         <main>
-            <div class="Container_Order_Summary">
-                <input class="Eingabefeld" type="text" id="search" name="search" placeholder="Suche">
-                <!-- Display Staff -->
-                <h3>Mitarbeiter an Standort {{ user.location }}</h3>
-                {% if users %}
-                    <ul>
-                        {% for staff in users %}
-                            <li>{{ staff.first_name }} {{ staff.last_name }} (Role: {{ staff.role }} - Staff-ID: {{ staff.id }})</li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>Currently no Staff at your Location.</p>
-                {% endif %}
-                <!-- Display Members -->
-                <h3>Members at your Location</h3>
-                {% if members %}
-                <form method="POST" action="{% url 'delete_members' %}">
-                    {% csrf_token %}
-                    <ul>
-                        {% for member in members %}
-                            <li>
-                                <input type="checkbox" name="members_to_delete" value="{{ member.id }}">
-                                {{ member.first_name }} {{ member.last_name }} (ID: {{ member.id }})
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <button type="submit">Delete Selected Members</button>
-                </form>
-                {% else %}
-                    <p>No members found at your Location.</p>
-                {% endif %}
-                {% else %}
-                    <p>You need to <a href="{% url 'login' %}">log in</a> to view this page.</p>
-                {% endif %}
-            </div>
-            <!-- Form to Add a New Member -->
+            <!-- Display Staff -->
+            <h3>Staff at your Location</h3>
+            {% if users %}
+                <ul>
+                    {% for staff in users %}
+                        <li>{{ staff.first_name }} {{ staff.last_name }} (Role: {{ staff.role }} - Staff-ID: {{ staff.id }})</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Currently no Staff at your Location.</p>
+            {% endif %}
+
+            <!-- Form to Add a New Order -->
             <h3>Add a Member</h3>
             <form method="POST" action="{% url 'add_member' %}">
                 {% csrf_token %}
@@ -83,8 +60,34 @@
                     <option value="3">3</option>
                 </select>
                 <br>
-                <button type="submit" class="Bestaetigung">Add Member</button>
+                
+                
+                <button type="submit">Add Member</button>
             </form>
+
+            <!-- Display Members -->
+            <h3>Members at your Location</h3>
+            {% if members %}
+            <form method="POST" action="{% url 'delete_members' %}">
+                {% csrf_token %}
+                <ul>
+                    {% for member in members %}
+                        <li>
+                            <input type="checkbox" name="members_to_delete" value="{{ member.id }}">
+                            {{ member.first_name }} {{ member.last_name }} (ID: {{ member.id }})
+                        </li>
+                    {% endfor %}
+                </ul>
+                <button type="submit">Delete Selected Members</button>
+            </form>
+            {% else %}
+                <p>No members found at your Location.</p>
+            {% endif %}
+
+
+        {% else %}
+            <p>You need to <a href="{% url 'login' %}">log in</a> to view this page.</p>
+        {% endif %}
         </main>
         <footer>
             <p>&copy; 2025 DigiDish</p>

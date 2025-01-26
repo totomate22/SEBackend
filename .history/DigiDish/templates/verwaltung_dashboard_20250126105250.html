@@ -10,14 +10,13 @@
     <body>
         <!-- Header -->
         <header>
-           <!-- {% if user.is_authenticated %} -->
-           <!-- <h1>Hallo, {{ user.username }}</h1> -->
+           <!-- {% if user.is_authenticated %}
+            <h1>Hallo, {{ user.username }}</h1> -->
             <!-- Logout -->
             <div class="Container_Header">
             <form method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="Ausloggen">Logout</button>
-                <!-- {% endif %}-->
             </form>
             </div>
         </header>
