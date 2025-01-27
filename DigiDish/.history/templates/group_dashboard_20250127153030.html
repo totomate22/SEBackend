@@ -26,7 +26,7 @@
         <div class="Container_Left_Side">
             <input class="Eingabefeld" type="text" id="search" name="search" placeholder="Suche">
             <!-- Display Members -->
-            <h3>Mitglieder der Gruppe {{ user.group_id }}:</h3>
+            <h3>Mitglieder Gruppe {{ user.group_id }}</h3>
             {% if members %}
                 <ul>
                     {% for member in members %}
@@ -39,7 +39,7 @@
         </div>
         <!-- Display Orders -->
         <div class="Container_Right_Side">
-            <h3>Bestellungen für Gruppe {{ user.group_id }}:</h3>
+            <h3>Bestellungen für Gruppe {{ user.group_id }}</h3>
             {% if orders %}
             <form method="POST" action="{% url 'delete_orders' %}">
                 {% csrf_token %}

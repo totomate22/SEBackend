@@ -24,7 +24,7 @@
         </header>
         <!-- Main Content Area -->
         <main>
-            <div class="Container_Left_Side">
+            <div class="Container_Order_Summary">
                 <input class="Eingabefeld" type="text" id="search" name="search" placeholder="Suche">
                 <!-- Display Staff -->
                 <h3>Mitarbeiter an Standort {{ user.location }}</h3>
@@ -60,33 +60,31 @@
                 {% endif %}
             </div>
             <!-- Form to Add a New Member -->
-            <div class="Container_Add">
-                <h3>Add a Member</h3>
-                <form method="POST" action="{% url 'add_member' %}">
-                    {% csrf_token %}
+            <h3>Add a Member</h3>
+            <form method="POST" action="{% url 'add_member' %}">
+                {% csrf_token %}
 
-                    <label for="first_name">First Name:</label>
-                    <input type="text" name="first_name" id="first_name" required>
-                    <br>
+                <label for="first_name">First Name:</label>
+                <input type="text" name="first_name" id="first_name" required>
+                <br>
 
-                    <label for="last_name">Last Name:</label>
-                    <input type="text" name="last_name" id="last_name" required>
-                    <br>     
+                <label for="last_name">Last Name:</label>
+                <input type="text" name="last_name" id="last_name" required>
+                <br>     
 
-                    <label for="group_id">Group-ID:</label>
-                    <input type="number" name="group_id" id="group_id" min="0" required>
-                    <br>  
+                <label for="group_id">Group-ID:</label>
+                <input type="number" name="group_id" id="group_id" min="0" required>
+                <br>  
 
-                    <label for="location">Location:</label>
-                    <select name="location" id="location" required>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                    </select>
-                    <br>
-                    <button type="submit" class="Bestaetigung">Add Member</button>
-                </form>
-            </div>
+                <label for="location">Location:</label>
+                <select name="location" id="location" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+                <br>
+                <button type="submit" class="Bestaetigung">Add Member</button>
+            </form>
         </main>
         <footer>
             <p>&copy; 2025 DigiDish</p>

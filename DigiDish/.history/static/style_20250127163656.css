@@ -97,7 +97,7 @@ footer {
     display: grid;                       
     place-items: center;         
     gap: 1rem;   
-    height: 70vh;          
+    height: 80vh;           
 }
 
 .Container_Header {
@@ -112,7 +112,7 @@ footer {
 }
 
 .Container_Right_Side {
-    width: 46%;
+    width: 45%;
     position: absolute;
     right: 0;
     padding: 1.5rem;
