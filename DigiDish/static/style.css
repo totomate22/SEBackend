@@ -111,7 +111,7 @@ footer {
     gap: 0.5rem;
 }
 
-.Container_Order_Summary {
+.Container_Right_Side {
     width: 45%;
     position: absolute;
     right: 0;
@@ -127,7 +127,7 @@ footer {
     background-color: #CFE2FF;
 }
 
-.Container_Member_Overview {
+.Container_Left_Side {
     max-width: 50%;
     position: absolute;
     left: 0;
