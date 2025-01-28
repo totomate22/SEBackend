@@ -159,7 +159,8 @@ footer {
     top: 0;
     left: 0;
     padding: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
     gap: 0.5rem;
-    display: flex; 
-    align-items: center;
 }
