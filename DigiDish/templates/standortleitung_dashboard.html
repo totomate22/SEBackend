@@ -25,18 +25,33 @@
         <!-- Main Content Area -->
         <main>
             <div class="Container_Left_Side">
-                <input class="Eingabefeld" type="text" id="search" name="search" placeholder="Suche">
-                <!-- Display Staff -->
-                <h3>Mitarbeiter an Standort {{ user.location }}</h3>
-                {% if users %}
-                    <ul>
-                        {% for staff in users %}
-                            <li>{{ staff.first_name }} {{ staff.last_name }} (Role: {{ staff.role }} - Staff-ID: {{ staff.id }})</li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>Currently no Staff at your Location.</p>
-                {% endif %}
+                <h2>Gruppenleitung Users</h2>
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Group ID</th>
+                        <th>Is Kitchen</th>
+                        <th>Actions</th>
+                    </tr>
+                    {% for user in users %}
+                    <tr>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                            <td>{{ user.first_name }} {{ user.last_name }}</td>
+                            <td>
+                                <input type="text" name="group_id" value="{{ user.group_id }}">
+                            </td>
+                            <td>
+                                <input type="checkbox" name="is_kitchen" {% if user.is_kitchen %}checked{% endif %}>
+                            </td>
+                            <td>
+                                <button type="submit">Update</button>
+                            </td>
+                        </form>
+                    </tr>
+                    {% endfor %}
+                </table>
                 <!-- Display Members -->
                 <h3>Members at your Location</h3>
                 {% if members %}
@@ -77,13 +92,6 @@
                     <input type="number" name="group_id" id="group_id" min="0" required>
                     <br>  
 
-                    <label for="location">Location:</label>
-                    <select name="location" id="location" required>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                    </select>
-                    <br>
                     <button type="submit" class="Bestaetigung">Add Member</button>
                 </form>
             </div>

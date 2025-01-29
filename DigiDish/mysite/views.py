@@ -94,15 +94,29 @@ def delete_orders(request):
     
 # Standortleitung-Dashboard and Function
 
-@login_required
 def standortleitung_dashboard(request):
     user = request.user
     user_location = user.location
 
-    members =  Member.objects.filter(location=user_location)
+    members = Member.objects.filter(location=user_location)
     orders = Order.objects.filter(member__location=user_location)
-    users = User.objects.filter(location=user_location,role='gruppenleitung')       #nochmal nachfragen, ob auch sl mit reins soll
+    users = User.objects.filter(location=user_location, role='gruppenleitung')  # Only show gruppenleitung users
 
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        new_group_id = request.POST.get('group_id')
+        is_kitchen = request.POST.get('is_kitchen') == 'on'  # Checkbox returns 'on' if checked
+
+        try:
+            user_to_update = User.objects.get(id=user_id, role='gruppenleitung', location=user_location)
+            user_to_update.group_id = new_group_id  # Update group ID
+            user_to_update.is_kitchen = is_kitchen  # Update is_kitchen
+            user_to_update.save()
+            messages.success(request, f"Updated {user_to_update.first_name} {user_to_update.last_name} successfully.")
+        except User.DoesNotExist:
+            messages.error(request, "User not found or unauthorized.")
+
+        return redirect('standortleitung_dashboard')
 
     return render(request, 'standortleitung_dashboard.html', {
         'user': user,
@@ -117,7 +131,7 @@ def add_member(request):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         group_id =request.POST.get('group_id')
-        location=request.POST.get('location')
+        location=request.user.get('location')
         
         member = Member(first_name=first_name, last_name=last_name, group_id=group_id,location=location)
         member.save()
