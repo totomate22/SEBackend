@@ -6,13 +6,14 @@ from order.models import Member, Order
 from users.models import User
 from django.utils.text import slugify
 from django.contrib.auth.hashers import make_password
-from datetime import datetime
-
+from django.http import JsonResponse
 import csv
 from django.http import HttpResponse
 
 
 # General Methods
+def favicon_view(request):      #Placeholder für favicon, aktuell nur leer
+    return HttpResponse(status=204)  # Empty response
 
 def delete_items(model, ids):
     model.objects.filter(id__in=ids).delete()
@@ -276,4 +277,27 @@ def create_staff(request):
         return redirect('verwaltung_dashboard')
 
     return render(request, 'create_staff.html')
+
+#
+# Scanner
+#
+def qr_scanner(request):
+    # This view simply renders the page where the QR code scanner will be active
+    return render(request, 'qr_scanner.html')
+
+
+def mark_orders_as_delivered(request, member_id):
+    
+    # Get the member object
+    member = get_object_or_404(Member, id=member_id)
+
+    # Get all pending orders for the member
+    pending_orders = Order.objects.filter(member=member, status='pending')
+
+    # Update the status of all pending orders to "delivered"
+    pending_orders.update(status='delivered')
+
+    # Return a JSON response indicating success
+    return JsonResponse({'success': True})
+
 # Create your views here.

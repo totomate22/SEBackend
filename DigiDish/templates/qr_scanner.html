@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+
+
+</head>
+<body>
+    <h2>Scan Member QR Code</h2>
+    <!-- Add a container for the QR code scanner -->
+    <div id="reader" style="width: 250px; height: 250px;"></div>
+
+    <!-- Add a container to display scanning status -->
+    <div id="status">Initializing camera...</div>
+    <video id="video" width="100%" height="auto" style="max-width: 100%; border: 1px solid #ccc;"></video>    
+    <script>
+        
+        // This function is triggered when the QR code is scanned successfully
+        function onScanSuccess(decodedText, decodedResult) {
+            console.log("QR Code data: ", decodedText);
+            document.getElementById("status").innerText = "Scanned QR Code: " + decodedText;
+
+            // Example: Send the decodedText to your Django backend to handle orders
+            const match = decodedText.match(/MemberID:\s*(\d+)/);
+            if (match) {
+                // The member ID is captured in the first group
+                const memberId = parseInt(match[1], 10);
+                console.log("Member ID: ", memberId);
+
+                // Fetch request to mark the orders as delivered using the memberId
+                fetch(`/mark_orders_as_delivered/${memberId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Failed with status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            alert('Orders marked as delivered!');
+                        } else {
+                            alert('Failed to mark orders!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error during fetch:', error);
+                        alert('Failed to communicate with the server. Please try again.');
+                    });
+            } else {
+                document.getElementById("status").innerText = "QR Code does not contain a valid member ID!";
+            }
+        }
+        const videoElement = document.getElementById("video");
+
+        videoElement.onload = () => {
+            // Get video width and height to calculate qrBox size dynamically
+            const videoWidth = videoElement.offsetWidth;
+            const videoHeight = videoElement.offsetHeight;
+
+            // Set qrBoxSize to 50% of the smaller dimension (height or width)
+            const qrBoxSize = Math.min(videoWidth, videoHeight) * 0.5;
+
+            // Initialize QR code scanner
+            const html5QrCode = new Html5Qrcode("video");
+
+            html5QrCode.start(
+                {},  // Use the rear camera (or default camera)
+                {
+                    fps: 10,   // Frames per second for scanning
+                    qrbox: qrBoxSize  // Dynamically calculated qrBoxSize
+                },
+                onScanSuccess  // Callback function for successful QR code scan
+            ).catch(err => {
+                console.error("Error accessing camera: ", err);
+                document.getElementById("status").innerText = "Error accessing camera!";
+            });
+        };
+    </script>
+</body>
+</html>

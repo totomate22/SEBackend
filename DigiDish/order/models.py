@@ -29,10 +29,7 @@ class Member (models.Model):
         pending_orders = self.orders.filter(status='pending')   #get the members orders
 
        # Generate the QR code content
-        qr_content = (
-            f"Member: {self.id}\n"
-            f"Name: {self.first_name} {self.last_name}\n"
-        )
+        qr_content = f"MemberID: {self.id}"
 
         # Generate the QR code
         qr = qrcode.make(qr_content)

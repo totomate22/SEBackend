@@ -23,6 +23,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.homepage, name='homepage'), #homepage
+    path('favicon.ico', views.favicon_view),
     path('login/',views.login_view, name='login'),  # Global loginpage
     path('logout/', views.logout_view, name='logout'),
     path('home/', views.home_view, name='home'),    #home after login
@@ -36,4 +37,6 @@ urlpatterns = [
     path('create_staff/', views.create_staff, name='create_staff'),
     path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
     path('delete_member/<int:member_id>/', views.delete_member, name='delete_member'),
+    path('mark_orders_as_delivered/<int:member_id>/', views.mark_orders_as_delivered, name='mark_orders_as_delivered'),
+    path('qr_scanner/', views.qr_scanner, name='qr_scanner'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)   #verweist auf settings für qr-code
