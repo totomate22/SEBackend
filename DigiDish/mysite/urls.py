@@ -33,4 +33,7 @@ urlpatterns = [
     path('add_member/', views.add_member, name='add_member'), #member hinzufügen
     path('delete-members/', views.delete_members, name='delete_members'),   #members löschen
     path('verwaltung_dashboard/', views.verwaltung_dashboard, name='verwaltung_dashboard'), #verwaltungsdashboard
+    path('create_staff/', views.create_staff, name='create_staff'),
+    path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
+    path('delete_member/<int:member_id>/', views.delete_member, name='delete_member'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)   #verweist auf settings für qr-code
