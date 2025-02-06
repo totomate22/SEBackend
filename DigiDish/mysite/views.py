@@ -30,6 +30,8 @@ def login_view(request):
         if user is not None:
             login(request, user)
             if user.role == 'gruppenleitung':
+                if user.is_kitchen:
+                    return redirect('group_dashboard_kitchen')
                 return redirect('group_dashboard') 
             if user.role == 'standortleitung':
                 return redirect('standortleitung_dashboard') 
@@ -61,6 +63,21 @@ def group_dashboard(request):
 
 
     return render(request, 'group_dashboard.html', {
+        'user': user,
+        'members': members,
+        'orders': orders,
+    })
+
+@login_required
+def group_dashboard_kitchen(request):
+    user = request.user
+    user_group_id = user.group_id
+
+    members =  Member.objects.filter(group_id=user_group_id)
+    orders = Order.objects.filter(member__group_id=user_group_id)
+
+
+    return render(request, 'group_dashboard_kitchen.html', {
         'user': user,
         'members': members,
         'orders': orders,

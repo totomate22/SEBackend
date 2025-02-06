@@ -28,6 +28,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('home/', views.home_view, name='home'),    #home after login
     path('group_dashboard/', views.group_dashboard, name='group_dashboard'),    #gruppenansicht
+    path('group_dashboard_kitchen/', views.group_dashboard_kitchen, name='group_dashboard_kitchen'),    #gruppenansicht
     path('add_order/', views.add_order, name='add_order'),      #order hinzufügen
     path('delete-orders/', views.delete_orders, name='delete_orders'),  #order löschen
     path('standortleitung_dashboard/', views.standortleitung_dashboard, name='standortleitung_dashboard'),  #standortleitungansicht
