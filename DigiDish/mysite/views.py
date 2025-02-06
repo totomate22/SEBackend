@@ -9,7 +9,7 @@ from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
 import csv
 from django.http import HttpResponse
-
+from django.utils.timezone import localdate
 
 # General Methods
 def favicon_view(request):      #Placeholder für favicon, aktuell nur leer
@@ -18,7 +18,15 @@ def favicon_view(request):      #Placeholder für favicon, aktuell nur leer
 def delete_items(model, ids):
     model.objects.filter(id__in=ids).delete()
 
-#
+def req_role(user, required):   #unauthorisierte abfangen, als normale funktio
+    if user.role != required:  # Restrict access
+        return redirect('homepage')
+
+def reqreq_role(request, required): #unauthorisierte abfangen, als request funktion
+    if request.user.role != required:  
+        messages.error(request, "You are not authorized to access this page.")
+        return redirect('homepage')
+
 def homepage(request):
     return render(request, 'homepage.html', {})
 
@@ -51,11 +59,16 @@ def logout_view(request):
 def home_view(request):
     return render(request, 'home.html')
 
+#
 # Group-Dashboard and Functions
+#
 
 @login_required
 def group_dashboard(request):
     user = request.user
+    redirect_response = req_role(user, 'gruppenleitung')  # Pass required role
+    if redirect_response:
+        return redirect_response  # Redirect to homepage if unauthorized
     user_group_id = user.group_id
 
     members =  Member.objects.filter(group_id=user_group_id)
@@ -70,7 +83,12 @@ def group_dashboard(request):
 
 @login_required
 def group_dashboard_kitchen(request):
+    
     user = request.user
+    redirect_response = req_role(user, 'gruppenleitung')  # Pass required role
+    if redirect_response:
+        return redirect_response  # Redirect to homepage if unauthorized
+    if not (user.is_kitchen): return redirect('homepage')
     user_group_id = user.group_id
 
     members =  Member.objects.filter(group_id=user_group_id)
@@ -84,6 +102,7 @@ def group_dashboard_kitchen(request):
     })
 
 def add_order(request):
+    reqreq_role(request,'gruppenleitung') #unauthorisierte abfangen
     if request.method == 'POST':
         member_id = request.POST.get('member')
         choice = request.POST.get('choice')
@@ -100,6 +119,7 @@ def add_order(request):
 
 @login_required
 def delete_orders(request):
+    reqreq_role(request, 'gruppenleitung')
     if request.method == 'POST':
         # Get the list of order IDs to delete from the form
         orders_to_delete = request.POST.getlist('orders_to_delete')
@@ -114,6 +134,9 @@ def delete_orders(request):
 
 def standortleitung_dashboard(request):
     user = request.user
+    redirect_response = req_role(user, 'standortleitung')  # Pass required role
+    if redirect_response:
+        return redirect_response  # Redirect to homepage if unauthorized
     user_location = user.location
 
     members = Member.objects.filter(location=user_location)
@@ -145,6 +168,7 @@ def standortleitung_dashboard(request):
 
 @login_required
 def add_member(request):
+    reqreq_role(request, 'standortleitung') #unauthorisierte abfangen
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
@@ -159,6 +183,7 @@ def add_member(request):
 
 @login_required
 def delete_members(request):
+    reqreq_role(request, 'standortleitung') #unauthorisierte abfangen
     if request.method == 'POST':
         # Get the list of order IDs to delete from the form
         members_to_delete = request.POST.getlist('members_to_delete')
@@ -174,9 +199,7 @@ def delete_members(request):
 
 @login_required
 def verwaltung_dashboard(request):
-    if request.user.role != 'verwaltung':  # Restrict access
-        messages.error(request, "You are not authorized to access this page.")
-        return redirect('home')
+    reqreq_role(request, 'verwaltung') #unauthorisierte abfangen
 
     selected_location = request.GET.get('location', 'all')  # Default to "all"
     search_query = request.GET.get('search', '')
@@ -246,6 +269,7 @@ def export_csv(members, gruppenleitung_users, standortleitung_users):
 
 @login_required
 def delete_user(request, user_id):
+    reqreq_role(request, 'verwaltung') #unauthorisierte abfangen
     user = get_object_or_404(User, id=user_id)
     user.delete()
     messages.success(request, "User deleted successfully.")
@@ -254,13 +278,17 @@ def delete_user(request, user_id):
 
 @login_required
 def delete_member(request, member_id):
+    reqreq_role(request, 'verwaltung') #unauthorisierte abfangen
+
     member = get_object_or_404(Member, id=member_id)
     member.delete()
     messages.success(request, "Member deleted successfully.")
     return redirect('verwaltung_dashboard')
 
-login_required
+@login_required
 def create_staff(request):
+    reqreq_role(request, 'verwaltung') #unauthorisierte abfangen
+
     if request.user.role != 'verwaltung':  # Restrict access
         messages.error(request, "You are not authorized to access this page.")
         return redirect('home')
@@ -298,23 +326,35 @@ def create_staff(request):
 #
 # Scanner
 #
+@login_required
 def qr_scanner(request):
+    user = request.user
+    redirect_response = req_role(user, 'gruppenleitung')  # Pass required role
+    if redirect_response:
+        return redirect_response  # Redirect to homepage if unauthorized    if not (user.is_kitchen): return redirect('homepage')
+    user_group_id = user.group_id
     # This view simply renders the page where the QR code scanner will be active
     return render(request, 'qr_scanner.html')
 
-
+@login_required
 def mark_orders_as_delivered(request, member_id):
-    
+    reqreq_role(request, 'gruppenleitung') #unauthorisierte abfangen
     # Get the member object
     member = get_object_or_404(Member, id=member_id)
-
-    # Get all pending orders for the member
-    pending_orders = Order.objects.filter(member=member, status='pending')
-
+    # Get today's date
+    today = localdate()
+    # Get all pending orders for the member placed today
+    pending_orders = Order.objects.filter(member=member, status='pending', date=today)
+    # Update the status of the pending orders to "delivered"
+    delivered_orders = list(pending_orders.values('id', 'choice', 'date'))  # Capture orders before updating
     # Update the status of all pending orders to "delivered"
     pending_orders.update(status='delivered')
 
     # Return a JSON response indicating success
-    return JsonResponse({'success': True})
+    return JsonResponse({
+        'success': True,
+        'member_name': f"{member.first_name} {member.last_name}",
+        'delivered_orders': delivered_orders,
+    })
 
 # Create your views here.

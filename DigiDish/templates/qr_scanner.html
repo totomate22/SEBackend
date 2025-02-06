@@ -1,44 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <div class="Container_Header">
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="Ausloggen">Logout</button>
+        </form>
+        <form method="GET" action="{% url 'group_dashboard_kitchen' %}">
+            <button type="submit" class="Dashboard">Dashboard</button>
+        </form>
+    </div>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Scanner</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
-
+    
+   
 
 </head>
 <body>
     <h2>Scan Member QR Code</h2>
     <div id="reader" style="width: 300px; height: 300px;"></div>
-    <div id="status">Initializing camera...</div>
+    <div id="status">Warten auf QR-Code...</div>
 
     <script>
         function onScanSuccess(decodedText, decodedResult) {
-            console.log("QR Code data: ", decodedText);
-            document.getElementById("status").innerText = "Scanned QR Code: " + decodedText;
+        console.log("QR Code data: ", decodedText);
+        document.getElementById("status").innerText = "Scanned QR Code: " + decodedText;
 
-            const match = decodedText.match(/MemberID:\s*(\d+)/);
-            if (match) {
-                const memberId = parseInt(match[1], 10);
-                console.log("Member ID: ", memberId);
+        const match = decodedText.match(/MemberID:\s*(\d+)/);
+        if (match) {
+            const memberId = parseInt(match[1], 10);
+            console.log("Member ID: ", memberId);
 
-                fetch(`/mark_orders_as_delivered/${memberId}`)
-                    .then(response => {
-                        if (!response.ok) throw new Error(`Failed with status: ${response.status}`);
-                        return response.json();
-                    })
-                    .then(data => {
-                        alert(data.success ? 'Orders marked as delivered!' : 'Failed to mark orders!');
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Server communication error. Please try again.');
-                    });
-            } else {
-                document.getElementById("status").innerText = "QR Code does not contain a valid member ID!";
-            }
+            fetch(`/mark_orders_as_delivered/${memberId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error(`Failed with status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Show the delivered orders and member name
+                        const memberName = data.member_name;
+                        const deliveredOrders = data.delivered_orders;
+
+                        let ordersList = `${memberName}:`;
+                        deliveredOrders.forEach(order => {
+                            ordersList += `<li>Order ID: ${order.id}, Choice: ${order.choice}, Date: ${order.date}</li>`;
+                        });
+                        ordersList += '</ul>';
+
+                        document.getElementById("status").innerHTML = ordersList;
+                        alert(ordersList);
+                    } else {
+                        alert('Failed to mark orders as delivered!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Server communication error. Please try again.');
+                });
+        } else {
+            document.getElementById("status").innerText = "QR Code does not contain a valid member ID!";
         }
+    }
+
 
         function startScanner() {
             const scanner = new Html5Qrcode("reader");
