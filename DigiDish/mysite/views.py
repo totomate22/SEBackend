@@ -173,7 +173,7 @@ def add_member(request):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         group_id =request.POST.get('group_id')
-        location=request.user.get('location')
+        location=request.user.location
         
         member = Member(first_name=first_name, last_name=last_name, group_id=group_id,location=location)
         member.save()
