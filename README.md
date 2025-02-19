@@ -11,7 +11,7 @@ Pillow<br><br>
 
 # 2. Installation (Windows 11)
 
-In the following, “Terminal” refers to the Windows Powershell.<br>
+In the following, “terminal” refers to the Windows Powershell.<br>
 
 ## 2.1 Install Dependencies
 
