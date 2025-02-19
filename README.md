@@ -109,7 +109,7 @@ To login there, use the username and password we defined earlier.
 
 ### Links
 
-&nbsp;&nbsp;&nbsp;&nbsp;[django](https://www.djangoproject.com/download/)<br>
+[django](https://www.djangoproject.com/download/)<br>
 
 **Backend vom Softwaretechnikpraktikum:**
 https://github.com/20SEBastian03/PraktikumSoftwaretechnik2024_25
