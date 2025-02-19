@@ -50,7 +50,7 @@ There are multiple ways to get the project files from our GitHub repository.
 
 Here are 2 examples:<br>
 
-&nbsp;&nbsp;&nbsp;&nbsp;a) Please open your terminal at the place where you want to install the projekt files.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a) Please open your terminal at the place where you want to install the project files.<br>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clone the repo:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`git clone https://github.com/totomate22/SEBackend`<br>
