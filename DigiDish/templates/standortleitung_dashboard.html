@@ -25,12 +25,12 @@
         <!-- Main Content Area -->
         <main>
             <div class="Container_Left_Side">
-                <h2>Gruppenleitung Users</h2>
+                <h2>Gruppenleitung:</h2>
                 <table>
                     <tr>
                         <th>Name</th>
                         <th>Group ID</th>
-                        <th>Is Kitchen</th>
+                        <th>is kitchen</th>
                         <th>Actions</th>
                     </tr>
                     {% for user in users %}
@@ -46,14 +46,14 @@
                                 <input type="checkbox" name="is_kitchen" {% if user.is_kitchen %}checked{% endif %}>
                             </td>
                             <td>
-                                <button type="submit">Update</button>
+                                <button type="submit"class="Bestaetigung">Aktualisieren</button>
                             </td>
                         </form>
                     </tr>
                     {% endfor %}
                 </table>
                 <!-- Display Members -->
-                <h3>Members at your Location</h3>
+                <h3>Mitarbeiterübersicht:</h3>
                 {% if members %}
                 <form method="POST" action="{% url 'delete_members' %}">
                     {% csrf_token %}
@@ -65,34 +65,34 @@
                             </li>
                         {% endfor %}
                     </ul>
-                    <button type="submit">Delete Selected Members</button>
+                    <button type="submit"class="Bestaetigung">Ausgewählte Mitarbeiter löschen</button>
                 </form>
                 {% else %}
-                    <p>No members found at your Location.</p>
+                    <p>Es wurden keine Mitarbeiter für diesen Standort gefunden..</p>
                 {% endif %}
                 {% else %}
-                    <p>You need to <a href="{% url 'login' %}">log in</a> to view this page.</p>
+                    <p>Sie müssen sich <a href="{% url 'login' %}">einloggen</a> um diese Seite zu sehen.</p>
                 {% endif %}
             </div>
             <!-- Form to Add a New Member -->
             <div class="Container_Add">
-                <h3>Add a Member</h3>
+                <h3>Mitarbeiter hinzufügen:</h3>
                 <form method="POST" action="{% url 'add_member' %}">
                     {% csrf_token %}
 
-                    <label for="first_name">First Name:</label>
+                    <label for="first_name">Vorname:</label>
                     <input type="text" name="first_name" id="first_name" required>
                     <br>
 
-                    <label for="last_name">Last Name:</label>
+                    <label for="last_name">Nachname:</label>
                     <input type="text" name="last_name" id="last_name" required>
                     <br>     
 
-                    <label for="group_id">Group-ID:</label>
+                    <label for="group_id">Gruppen-ID:</label>
                     <input type="number" name="group_id" id="group_id" min="0" required>
                     <br>  
 
-                    <button type="submit" class="Bestaetigung">Add Member</button>
+                    <button type="submit" class="Bestaetigung">Mitarbeiter hinzufügen</button>
                 </form>
             </div>
         </main>
