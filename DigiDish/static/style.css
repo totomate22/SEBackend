@@ -140,10 +140,9 @@ footer {
 }
 
 .Container_Add {
-    max-width: 50%;
+    width: 48%;
     position: absolute;
-    left: 0;
-    bottom: 0;
+    right: 0;
     padding: 1.5rem;
     margin: 0.5rem;
     display: grid;                   
