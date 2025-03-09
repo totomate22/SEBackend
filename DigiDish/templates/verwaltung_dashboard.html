@@ -16,10 +16,7 @@
             <div class="Container_Header">
             <form method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}
-                <h1>Verwaltung Dashboard</h1>
-                <a href="{% url 'create_staff' %}">
-                    <button class="Ausloggen">Account anlegen</button>
-                </a>                
+                <h1>Dashboard der Verwaltung</h1>               
                 <button type="submit" class="Ausloggen">Logout</button>
                 <!-- {% endif %}-->
             </form>
@@ -117,7 +114,10 @@
         <p>Keine Mitarbeiter gefunden.</p>
     {% endif %}
 {% endif %}
-    
+
+<a href="{% url 'create_staff' %}">
+    <button class="Ausloggen">Account anlegen</button>
+</a>     
         </main>
     </body>
 </html>
