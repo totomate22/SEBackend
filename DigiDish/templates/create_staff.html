@@ -10,7 +10,7 @@
 <body>
     <!-- Header -->
     <header>
-        <h1>Create Staff</h1>
+        <h1>Neuen Account anlegen</h1>
     </header>
     <!-- Main Content Area -->
     <main>
@@ -18,32 +18,32 @@
 <form method="post">
     {% csrf_token %}
     
-    <label for="first_name">First Name:</label>
+    <label for="first_name">Vorname:</label>
     <input type="text" id="first_name" name="first_name" required>
 
-    <label for="last_name">Last Name:</label>
+    <label for="last_name">Nachname:</label>
     <input type="text" id="last_name" name="last_name" required>
 
-    <label for="role">Role:</label>
+    <label for="role">Position:</label>
     <select id="role" name="role" required>
         <option value="gruppenleitung">Gruppenleitung</option>
         <option value="standortleitung">Standortleitung</option>
     </select>
 
-    <label for="location">Location:</label>
+    <label for="location">Standort:</label>
     <select id="location" name="location" required>
-        <option value="1">Location 1</option>
-        <option value="2">Location 2</option>
-        <option value="3">Location 3</option>
+        <option value="1">Standort 1</option>
+        <option value="2">Standort 2</option>
+        <option value="3">Standort 3</option>
     </select>
 
-    <label for="password">Password:</label>
+    <label for="password">Passwort:</label>
     <input type="password" id="password" name="password" required>
 
-    <button type="submit">Create Staff</button>
+    <button type="submit" class="Bestaetigung">Account anlegen</button>
 </form>
 
-<a href="{% url 'verwaltung_dashboard' %}">Back to Dashboard</a>
+<a href="{% url 'verwaltung_dashboard' %}">Zurück zum Dashboard der Verwaltung</a>
 >
     </main>
     <!-- Footer -->
