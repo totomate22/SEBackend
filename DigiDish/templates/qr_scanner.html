@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
     <div class="Container_Header">
+        <title>QR-Code Scanner</title>
         <form method="POST" action="{% url 'logout' %}">
             {% csrf_token %}
             <button type="submit" class="Ausloggen">Logout</button>
         </form>
         <form method="GET" action="{% url 'group_dashboard_kitchen' %}">
-            <button type="submit" class="Dashboard">Dashboard</button>
+            <button type="submit" class="Ausloggen">Dashboard</button>
         </form>
     </div>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Scanner</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
-    
-   
-
 </head>
 <body>
-    <h2>Scan Member QR Code</h2>
+    <h2>QR-Code des Mitarbeiters scannen</h2>
     <div id="reader" style="width: 300px; height: 300px;"></div>
     <div id="status">Warten auf QR-Code...</div>
 
