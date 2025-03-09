@@ -16,6 +16,7 @@
             <div class="Container_Header">
             <form method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}
+                <h1>Verwaltung Dashboard</h1>
                 <button type="submit" class="Ausloggen">Logout</button>
                 <!-- {% endif %}-->
             </form>
@@ -23,13 +24,12 @@
         </header>
           <!-- Main Content Area -->
         <main>
-            <h1>Verwaltung Dashboard</h1>
-
+            
 <!-- Location Selection and Filters -->
 <form method="get">
-    <label for="location">Select Location:</label>
+    <label for="location">Standort auswählen:</label>
     <select id="location" name="location">
-        <option value="">-- Select a Location --</option>
+        <option value="">-- Standort wählen --</option>
         {% for location in locations %}
             <option value="{{ location }}" {% if location == selected_location %}selected{% endif %}>
                 {{ location }}
@@ -37,28 +37,28 @@
         {% endfor %}
     </select>
 
-    <label for="search">Search:</label>
+    <label for="search">Suche:</label>
     <input type="text" id="search" name="search" value="{{ search_query }}" placeholder="Enter name">
 
-    <label for="role">Role:</label>
+    <label for="role">Position:</label>
     <select id="role" name="role">
-        <option value="">All</option>
+        <option value="">alle</option>
         <option value="gruppenleitung" {% if role_filter == "gruppenleitung" %}selected{% endif %}>Gruppenleitung</option>
         <option value="standortleitung" {% if role_filter == "standortleitung" %}selected{% endif %}>Standortleitung</option>
     </select>
 
-    <button type="submit">Filter</button>
-    <button type="submit" name="export_csv" value="true">Export CSV</button>
+    <button type="submit"class="Bestaetigung">Filter</button>
+    <button type="submit" name="export_csv" value="true" class="Bestaetigung">CSV exportieren</button>
 </form>
 
 {% if selected_location %}
-    <h2>Users & Members from {{ selected_location }}</h2>
+    <h2>Mitarbeiter von Standort {{ selected_location }}</h2>
 
     <!-- Gruppenleitung Users -->
-    <h3>Gruppenleitung Users</h3>
+    <h3>Übersicht Gruppenleitung</h3>
     {% if gruppenleitung_users %}
         <table border="1">
-            <tr><th>First Name</th><th>Last Name</th><th>Username</th><th>Actions</th></tr>
+            <tr><th>Vorname</th><th>Nachname</th><th>Nutzername</th><th>Aktionen</th></tr>
             {% for user in gruppenleitung_users %}
                 <tr>
                     <td>{{ user.first_name }}</td>
@@ -71,14 +71,14 @@
             {% endfor %}
         </table>
     {% else %}
-        <p>No Gruppenleitung users found.</p>
+        <p>Keine Gruppenleiter gefunden.</p>
     {% endif %}
 
     <!-- Standortleitung Users -->
-    <h3>Standortleitung Users</h3>
+    <h3>Übersicht Standortleitung</h3>
     {% if standortleitung_users %}
         <table border="1">
-            <tr><th>First Name</th><th>Last Name</th><th>Username</th><th>Actions</th></tr>
+            <tr><th>Vorname</th><th>Nachname</th><th>Benutzername</th><th>Aktionen</th></tr>
             {% for user in standortleitung_users %}
                 <tr>
                     <td>{{ user.first_name }}</td>
@@ -91,14 +91,14 @@
             {% endfor %}
         </table>
     {% else %}
-        <p>No Standortleitung users found.</p>
+        <p>Keine Standortleiter gefunden.</p>
     {% endif %}
 
     <!-- Members -->
-    <h3>Members</h3>
+    <h3>Mitarbeiter</h3>
     {% if members %}
         <table border="1">
-            <tr><th>First Name</th><th>Last Name</th><th>Group ID</th><th>Actions</th></tr>
+            <tr><th>Vorname</th><th>Nachname</th><th>Gruppen ID</th><th>Aktionen</th></tr>
             {% for member in members %}
                 <tr>
                     <td>{{ member.first_name }}</td>
@@ -111,12 +111,12 @@
             {% endfor %}
         </table>
     {% else %}
-        <p>No members found.</p>
+        <p>Keine Mitarbeiter gefunden.</p>
     {% endif %}
 {% endif %}
     
 <a href="{% url 'create_staff' %}">
-    <button>Create Staff</button>
+    <button type="submit"class="Bestaetigung">Account anlegen</button>
 </a>
         </main>
     </body>
